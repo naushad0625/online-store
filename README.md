@@ -24,7 +24,7 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+[Online Store](https://github.com/nestjs/nest) A project discussed in the book named "Paactical Nest.js: Develop clean MVC web applications". Developed as part of learning process of Nest.js.
 
 ## Installation
 
@@ -64,9 +64,9 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 ## Stay in touch
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
+- Author - [Naushad Hossain](https://kamilmysliwiec.com)
 - Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- Linkedin - [@nestframework](https://twitter.com/nestframework)
 
 ## License
 
