@@ -32,6 +32,38 @@
 $ npm install
 ```
 
+## Setting Up PostgreSQL Database with Docker
+
+- Step-1: Docker installation guideline
+
+  - Follow this url: https://docs.docker.com/engine/install/ to install Docker.
+
+- Step-2: Create a .env file and use the following configuration
+
+  ```bash
+  # PostgreSQL environment variables
+  POSTGRES_USER=myuser
+  POSTGRES_PASSWORD=mypassword
+  POSTGRES_DB=mydatabase
+
+  # pgAdmin environment variables
+  PGADMIN_DEFAULT_EMAIL=admin@example.com
+  PGADMIN_DEFAULT_PASSWORD=admin
+  ```
+
+- Step-3: Run following command
+
+  ```bash
+  # Start database container
+  $ npm run db:dev:up
+
+  # Remove database container
+  $ npm run db:dev:rm
+
+  # Restart database container
+  $ npm run db:dev:restart
+  ```
+
 ## Running the app
 
 ```bash
