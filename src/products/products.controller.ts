@@ -26,8 +26,8 @@ export class ProductsController {
 
     const viewData = [];
 
-    viewData['title'] = product.name + ' - Online Store';
-    viewData['subtitle'] = product.name + ' - Product Info';
+    viewData['title'] = product.getName() + ' - Online Store';
+    viewData['subtitle'] = product.getName() + ' - Product Info';
     viewData['product'] = product;
 
     return response.render('products/show', { viewData: viewData });
