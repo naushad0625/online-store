@@ -1,5 +1,64 @@
 {{#>admin}}
 {{#*inline 'content'}}
+<div class="card mb-4">
+    <div class="card-header">
+        <h2>Create Products</h2>
+    </div>
+    <div class="card-body">
+        <form action="/admin/products/store" method="post" enctype="multipart/form-data">
+
+            <div class="row">
+                <div class="col">
+                    <div class="row mb-3">
+                        <div class="col-lg-2 col-md-6 col-sm-12 col-form-label">Name:</div>
+                        <div class="col-lg-10 col-md-6 col-sm-12">
+                            <input type="text" class="form-control" name="name" placeholder="e.g. - Laptop" required>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="row mb-3">
+                        <div class="col-lg-2 col-md-6 col-sm-12 col-form-label">Price:</div>
+                        <div class="col-lg-10 col-md-6 col-sm-12">
+                            <input type="number" class="form-control" name="price" placeholder="e.g.- 100" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="row mb-3">
+                        <div class="col-lg-2 col-md-6 col-sm-12 col-form-label">Image:</div>
+                        <div class="col-lg-10 col-md-6 col-sm-12 ">
+                            <input type="file" class="form-control" name="image">
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    &nbsp;
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="mb-3 row">
+                        <div class="col-lg-2 col-md-6 col-sm-12 col-form-label">Description:</div>
+                        <div class="col-lg-10 col-md-6 col-sm-12 ">
+                            <textarea name="description" rows="3" class="form-control" required></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    &nbsp;
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-dark">Submit</button>
+        </form>
+    </div>
+</div>
 <div class="card">
     <div class="card-header">
         <p>Manage Products</p>
@@ -27,5 +86,6 @@
         </table>
     </div>
 </div>
+
 {{/inline}}
 {{/admin}}
