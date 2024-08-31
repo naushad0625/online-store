@@ -1,10 +1,11 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
+import { AppModule } from './app.module';
 
 import * as hbs from 'hbs';
 import * as hbsUtils from 'hbs-utils';
+import { HttpExceptionFilter } from './filters/httpException.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -16,6 +17,8 @@ async function bootstrap() {
   hbsUtils(hbs).registerWatchedPartials(join(__dirname, '..', 'views/layouts'));
 
   app.setViewEngine('hbs');
+
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   await app.listen(3000);
 }
