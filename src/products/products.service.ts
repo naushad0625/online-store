@@ -1,5 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { log } from 'console';
+import { unlink } from 'fs/promises';
 import { CreateNewProductDTO } from 'src/dtos/createNewProduct.dto';
 import { Product } from 'src/models/procuct.entity';
 import { Repository } from 'typeorm';
@@ -18,7 +20,7 @@ export class ProductsService {
     return this.productsRepository.findOneBy({ id });
   }
 
-  createOrUpdate(
+  async createOrUpdate(
     createNewProductDTO: CreateNewProductDTO,
     filename: string,
   ): Promise<Product> {
@@ -30,5 +32,28 @@ export class ProductsService {
     newProduct.setImage(filename);
 
     return this.productsRepository.save(newProduct);
+  }
+
+  async remove(id: number): Promise<string | NotFoundException> {
+    const product: Product = await this.findOne(id);
+
+    if (product === undefined || product === null) {
+      return new NotFoundException(
+        `Product with provided id(id=${id}) does not exist.`,
+      );
+    }
+
+    const image = product.getImage();
+
+    await this.productsRepository
+      .createQueryBuilder()
+      .delete()
+      .from(Product)
+      .where('id = :id', { id: id })
+      .execute()
+      .then(() => unlink('./public/img/' + image))
+      .catch((err: Error) => log(err));
+
+    return image;
   }
 }

@@ -2,6 +2,9 @@ import {
   Body,
   Controller,
   Get,
+  NotFoundException,
+  Param,
+  ParseIntPipe,
   Post,
   Redirect,
   Render,
@@ -78,5 +81,12 @@ export class AdminProductsController {
     log(img);
     const { filename }: Express.Multer.File = img;
     await this.productsService.createOrUpdate(createNewProductDTO, filename);
+  }
+
+  @Post('/:id')
+  @Redirect('/admin/products')
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    const result = await this.productsService.remove(id);
+    if (result instanceof NotFoundException) throw result;
   }
 }
