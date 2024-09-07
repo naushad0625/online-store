@@ -1,10 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { log } from 'console';
 import { unlink } from 'fs/promises';
+import { join } from 'path';
 import { CreateNewProductDTO } from 'src/dtos/createNewProduct.dto';
-import { Product } from 'src/models/procuct.entity';
-import { Repository } from 'typeorm';
+import { UpdateProductDTO } from 'src/dtos/updateProduct.dto';
+import { Product } from 'src/models/product.entity';
+import { Repository, UpdateResult } from 'typeorm';
 
 @Injectable()
 export class ProductsService {
@@ -12,15 +13,21 @@ export class ProductsService {
     @InjectRepository(Product) private productsRepository: Repository<Product>,
   ) {}
 
-  findAll(): Promise<Product[]> {
-    return this.productsRepository.find();
+  async findAll(): Promise<Product[]> {
+    return await this.productsRepository.find();
   }
 
-  findOne(id: number): Promise<Product> {
-    return this.productsRepository.findOneBy({ id });
+  async findOne(id: number): Promise<Product> {
+    const product: Product = await this.productsRepository.findOneBy({ id });
+    if (!product) {
+      throw new NotFoundException(
+        `Product with given ID (id= ${id}) does not exist.`,
+      );
+    }
+    return product;
   }
 
-  async createOrUpdate(
+  async create(
     createNewProductDTO: CreateNewProductDTO,
     filename: string,
   ): Promise<Product> {
@@ -34,26 +41,54 @@ export class ProductsService {
     return this.productsRepository.save(newProduct);
   }
 
-  async remove(id: number): Promise<string | NotFoundException> {
-    const product: Product = await this.findOne(id);
+  async update(
+    id: number,
+    updateProductDTO: UpdateProductDTO,
+    filename?: string,
+  ): Promise<UpdateResult> {
+    const product = await this.findOne(id);
 
-    if (product === undefined || product === null) {
-      return new NotFoundException(
-        `Product with provided id(id=${id}) does not exist.`,
-      );
+    if (product instanceof NotFoundException) {
+      throw product;
     }
 
-    const image = product.getImage();
+    const { name, price, description } = updateProductDTO;
+    const update_set: Partial<Product> = {};
 
-    await this.productsRepository
+    if (name) update_set['name'] = name;
+    if (price) update_set['price'] = price;
+    if (description) update_set['description'] = description;
+    if (filename) update_set['image'] = filename;
+
+    return this.productsRepository
       .createQueryBuilder()
-      .delete()
-      .from(Product)
+      .update(Product)
+      .set(update_set)
       .where('id = :id', { id: id })
-      .execute()
-      .then(() => unlink('./public/img/' + image))
-      .catch((err: Error) => log(err));
+      .execute();
+  }
 
-    return image;
+  async remove(id: number): Promise<string> {
+    let imagefileName: string;
+    return this.findOne(id)
+      .then((product) => {
+        if (product instanceof NotFoundException) {
+          throw product;
+        }
+        imagefileName = product.getImage();
+        return this.productsRepository
+          .createQueryBuilder()
+          .delete()
+          .from(Product)
+          .where('id = :id', { id: id })
+          .execute();
+      })
+      .then(() => {
+        const imagePath = join(process.cwd(), 'public', 'img', imagefileName);
+        return unlink(imagePath);
+      })
+      .then(() => {
+        return imagefileName;
+      });
   }
 }
