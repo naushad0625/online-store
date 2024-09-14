@@ -17,14 +17,12 @@ export class ProductsController {
   @Get('/')
   @Render('products/index')
   async index() {
-    const viewdata = {};
-    viewdata['title'] = 'Products - Online Store';
-    viewdata['subtitle'] = 'List of Products';
-    viewdata['products'] = await this.productsService.findAll();
+    const viewData = [];
+    viewData['title'] = 'Products - Online Store';
+    viewData['subtitle'] = 'List of Products';
+    viewData['products'] = await this.productsService.findAll();
 
-    log(viewdata);
-
-    return { viewdata: viewdata };
+    return { viewData: viewData };
   }
 
   @Get('/:id')

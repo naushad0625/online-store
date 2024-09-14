@@ -1,8 +1,10 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from 'src/models/product.entity';
+import { UserAc } from 'src/models/user.entity';
 
+@Global()
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -15,12 +17,12 @@ import { Product } from 'src/models/product.entity';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
-        entities: [Product],
+        entities: [Product, UserAc],
         synchronize: true, //Should not synchronize in production mode. If so, production data might get lost.
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([Product]),
+    TypeOrmModule.forFeature([Product, UserAc]),
   ],
   exports: [TypeOrmModule],
 })
